@@ -1,6 +1,6 @@
 package com.peoplellink.p2psdk;
 
-public interface InApiListener {
+public interface SDKListener {
 
     void onCallInitiated();
 

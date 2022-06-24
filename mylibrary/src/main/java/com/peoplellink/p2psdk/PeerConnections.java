@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class InApiPeer {
+public class PeerConnections {
 
     private static final String VIDEO_TRACK_ID = "ARDAMSv0";
     private static final String AUDIO_TRACK_ID = "ARDAMSa0";
@@ -75,22 +75,22 @@ public class InApiPeer {
     private String credential;
     private boolean isVideoMuted = false;
 
-    private static InApiPeer instance = null;
+    private static PeerConnections instance = null;
 
-    private InApiListener instaListener;
+    private SDKListener instaListener;
     private boolean isInitialised = false;
 
-    private InApiPeer() {
+    private PeerConnections() {
     }
 
-    protected static InApiPeer getInstance() {
+    protected static PeerConnections getInstance() {
         if (instance == null) {
-            instance = new InApiPeer();
+            instance = new PeerConnections();
         }
         return instance;
     }
 
-    public void setListener(InApiListener listener) {
+    public void setListener(SDKListener listener) {
         instaListener = listener;
     }
 
