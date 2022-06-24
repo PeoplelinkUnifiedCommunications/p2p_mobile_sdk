@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">P2PSDK</string>
+
+    <string name="hello_first_fragment">Hello </string>
+</resources>
