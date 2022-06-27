@@ -149,7 +149,7 @@ public class PeerConnections {
                                 case "call-initiated": {
                                     remoteUserId = mainJson.getString("id");
                                     isAudioCall = mainJson.getBoolean("isAudioCall");
-                                    instaListener.onCallInitiated();
+                                    instaListener.onCallInitiated(remoteUserId);
                                     break;
                                 }
 

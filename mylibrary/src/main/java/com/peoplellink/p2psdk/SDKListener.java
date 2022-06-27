@@ -2,7 +2,7 @@ package com.peoplellink.p2psdk;
 
 public interface SDKListener {
 
-    void onCallInitiated();
+    void onCallInitiated(String remoteId);
 
     void offerReceived(String remoteId, boolean isAudioCall);
 
