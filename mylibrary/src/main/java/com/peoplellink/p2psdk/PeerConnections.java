@@ -213,7 +213,7 @@ public class PeerConnections {
             try {
                 webSocketClient.connectBlocking();
             } catch (InterruptedException e) {
-                callBack.onFailure(e.getMessage() + " Trying to reconnect");
+                callBack.onFailure(e.getMessage() + "Trying to reconnect");
                 reconnectIfNecessary();
             }
         } else {
@@ -270,8 +270,6 @@ public class PeerConnections {
 
         //TO START LOCAL CAPTURE
         mVideoCapture.startCapture(VIDEO_RESOLUTION_WIDTH, VIDEO_RESOLUTION_HEIGHT, VIDEO_FPS);
-
-
     }
 
 

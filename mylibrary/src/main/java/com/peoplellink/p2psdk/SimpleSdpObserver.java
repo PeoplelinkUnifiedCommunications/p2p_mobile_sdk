@@ -11,7 +11,6 @@ public class SimpleSdpObserver implements SdpObserver {
     @Override
     public void onSetSuccess() {
     }
-
     @Override
     public void onCreateFailure(String msg) {
     }
