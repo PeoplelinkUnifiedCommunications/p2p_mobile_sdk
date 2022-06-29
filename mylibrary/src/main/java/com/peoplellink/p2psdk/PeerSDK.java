@@ -28,8 +28,8 @@ public class PeerSDK {
     }
 
     /*For answer call. */
-    public void answerCall() {
-        PeerConnections.getInstance().callAccepted();
+    public void answerCall(String remoteId) {
+        PeerConnections.getInstance().callAccepted(remoteId);
     }
 
     /*For make call to remote user. */
@@ -38,13 +38,13 @@ public class PeerSDK {
     }
 
     /*For answer call from caller. */
-    public void answerCallFromCaller() {
-        PeerConnections.getInstance().answerCall();
+    public void answerCallFromCaller(String remoteId) {
+        PeerConnections.getInstance().answerCall(remoteId);
     }
 
     /*For disconnect call. */
-    public void disconnectCall() {
-        PeerConnections.getInstance().disconnect();
+    public void disconnectCall(String remoteId) {
+        PeerConnections.getInstance().disconnect(remoteId);
     }
 
     /*For leave call. */
@@ -53,8 +53,8 @@ public class PeerSDK {
     }
 
     /*For decline call. */
-    public void declineCall() {
-        PeerConnections.getInstance().declineCall();
+    public void declineCall(String remoteId) {
+        PeerConnections.getInstance().declineCall(remoteId);
     }
 
     /*For call audio Mute */
@@ -78,13 +78,13 @@ public class PeerSDK {
     }
 
     /*For call video Mute */
-    public void videoMute() {
-        PeerConnections.getInstance().videoMute();
+    public void videoMute(String remoteId) {
+        PeerConnections.getInstance().videoMute(remoteId);
     }
 
     /*For call video UnMute */
-    public void videoUnMute() {
-        PeerConnections.getInstance().videoUnMute();
+    public void videoUnMute(String remoteId) {
+        PeerConnections.getInstance().videoUnMute(remoteId);
     }
 
     /*For switch camera to front or rear */
@@ -105,8 +105,7 @@ public class PeerSDK {
         PeerConnections.getInstance().sendMessage(remoteId, message);
     }
 
-    public void sendReply(String message) {
-        PeerConnections.getInstance().sendReply(message);
+    public void sendReply(String remoteId, String message) {
+        PeerConnections.getInstance().sendReply(remoteId, message);
     }
-
 }

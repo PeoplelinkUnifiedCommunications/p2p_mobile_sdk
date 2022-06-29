@@ -139,10 +139,10 @@ public class PeerConnections {
                                     break;
 
                                 case "offer": {
-                                    remoteUserId = mainJson.getString("id");
+                                    String remoteUserId = mainJson.getString("id");
                                     onRemoteOfferReceived(mainJson, remoteUserId);
                                     instaListener.offerReceived(remoteUserId, isAudioCall);
-                                    answerCall();
+                                    answerCall(remoteUserId);
                                     break;
                                 }
 
@@ -150,19 +150,20 @@ public class PeerConnections {
                                     remoteUserId = mainJson.getString("id");
                                     isAudioCall = mainJson.getBoolean("isAudioCall");
                                     instaListener.onCallInitiated(remoteUserId);
+
                                     break;
                                 }
 
                                 case "call-accepted": {
                                     onRemoteAnswerReceived(mainJson);
-                                    remoteUserId = mainJson.getString("id");
+                                    String remoteUserId = mainJson.getString("id");
                                     makeCall(remoteUserId);
                                     break;
                                 }
 
                                 case "answer":
-                                    instaListener.onCallAccept();
                                     onRemoteAnswerReceived(mainJson);
+                                    instaListener.onCallAccept();
                                     break;
 
                                 case "candidate":
@@ -483,10 +484,10 @@ public class PeerConnections {
     }
 
     protected void initiateCall(String remoteId, boolean isAudioCall) {
-        remoteUserId = remoteId;
+//        remoteUserId = remoteId;
         JSONObject message = new JSONObject();
         try {
-            message.put("id", getRemoteUserId());
+            message.put("id", remoteId);
             message.put("type", "call-initiated");
             message.put("isAudioCall", isAudioCall);
             send(message.toString());
@@ -497,7 +498,7 @@ public class PeerConnections {
     }
 
     protected void makeCall(String remoteId) {
-        this.remoteUserId = remoteId;
+//        remoteUserId = remoteId;
         if (mPeerConnection == null) {
             mPeerConnection = createPeerConnection();
         }
@@ -513,7 +514,7 @@ public class PeerConnections {
                 mPeerConnection.setLocalDescription(new SimpleSdpObserver(), sessionDescription);
                 JSONObject message = new JSONObject();
                 try {
-                    message.put("id", getRemoteUserId());
+                    message.put("id", remoteId);
                     message.put("type", "offer");
                     message.put("sdp", sessionDescription.description);
                     send(message.toString());
@@ -524,10 +525,10 @@ public class PeerConnections {
         }, mediaConstraints);
     }
 
-    protected void callAccepted() {
+    protected void callAccepted(String remoteId) {
         JSONObject message = new JSONObject();
         try {
-            message.put("id", getRemoteUserId());
+            message.put("id", remoteId);
             message.put("type", "call-accepted");
             send(message.toString());
         } catch (JSONException e) {
@@ -537,10 +538,10 @@ public class PeerConnections {
     }
 
     protected void sendMessage(String remoteId, String message) {
-        remoteUserId = remoteId;
+//        remoteUserId = remoteId;
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("id", getRemoteUserId());
+            jsonObject.put("id", remoteId);
             jsonObject.put("type", "message");
             jsonObject.put("message", message);
             send(jsonObject.toString());
@@ -550,10 +551,10 @@ public class PeerConnections {
         }
     }
 
-    protected void sendReply(String message) {
+    protected void sendReply(String remoteId, String message) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("id", getRemoteUserId());
+            jsonObject.put("id", remoteId);
             jsonObject.put("type", "message");
             jsonObject.put("message", message);
             send(jsonObject.toString());
@@ -563,7 +564,7 @@ public class PeerConnections {
         }
     }
 
-    protected void answerCall() {
+    protected void answerCall(String remoteId) {
         if (mPeerConnection == null) {
             mPeerConnection = createPeerConnection();
         }
@@ -582,7 +583,7 @@ public class PeerConnections {
                 JSONObject message = new JSONObject();
 
                 try {
-                    message.put("id", getRemoteUserId());
+                    message.put("id", remoteId);
                     message.put("type", "answer");
                     message.put("sdp", sessionDescription.description);
                     send(message.toString());
@@ -594,10 +595,10 @@ public class PeerConnections {
         }, sdpMediaConstraints);
     }
 
-    protected void declineCall() {
+    protected void declineCall(String remoteId) {
         JSONObject message = new JSONObject();
         try {
-            message.put("id", getRemoteUserId());
+            message.put("id", remoteId);
             message.put("type", "call-declined");
             send(message.toString());
         } catch (JSONException e) {
@@ -605,10 +606,10 @@ public class PeerConnections {
         }
     }
 
-    protected void disconnect() {
+    protected void disconnect(String remoteId) {
         JSONObject message = new JSONObject();
         try {
-            message.put("id", getRemoteUserId());
+            message.put("id", remoteId);
             message.put("type", "bye");
             send(message.toString());
         } catch (JSONException e) {
@@ -651,12 +652,12 @@ public class PeerConnections {
         mAudioTrack.setEnabled(true);
     }
 
-    protected void videoMute() {
+    protected void videoMute(String remoteId) {
         mVideoTrack.setEnabled(false);
         JSONObject jsonMain = new JSONObject();
         try {
             jsonMain.put("isVideoMute", true);
-            jsonMain.put("id", getRemoteUserId());
+            jsonMain.put("id", remoteId);
             jsonMain.put("type", "video-muted");
             send(jsonMain.toString());
         } catch (JSONException e) {
@@ -664,12 +665,12 @@ public class PeerConnections {
         }
     }
 
-    protected void videoUnMute() {
+    protected void videoUnMute(String remoteId) {
         mVideoTrack.setEnabled(true);
         JSONObject jsonMain = new JSONObject();
         try {
             jsonMain.put("isVideoMute", false);
-            jsonMain.put("id", getRemoteUserId());
+            jsonMain.put("id", remoteId);
             jsonMain.put("type", "video-muted");
             send(jsonMain.toString());
         } catch (JSONException e) {
@@ -743,5 +744,6 @@ public class PeerConnections {
         return mBluetoothAdapter != null && mBluetoothAdapter.isEnabled()
                 && mBluetoothAdapter.getProfileConnectionState(BluetoothHeadset.HEADSET) == BluetoothHeadset.STATE_CONNECTED;
     }
+
 
 }
