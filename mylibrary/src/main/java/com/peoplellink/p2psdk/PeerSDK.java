@@ -6,7 +6,6 @@ import org.webrtc.SurfaceViewRenderer;
 
 
 public class PeerSDK {
-
     /* For connect to webSocket pass webSocket url and meeting id. */
     public void connectServer(String serverUrl, String selfId, ActionCallBack callBack) {
         PeerConnections.getInstance().connectServer(serverUrl, selfId, callBack);
@@ -28,8 +27,8 @@ public class PeerSDK {
     }
 
     /*For answer call. */
-    public void answerCall(String remoteId) {
-        PeerConnections.getInstance().callAccepted(remoteId);
+    public void answerCall(String remoteId, ActionCallBack callBack) {
+        PeerConnections.getInstance().callAccepted(remoteId, callBack);
     }
 
     /*For make call to remote user. */
@@ -101,10 +100,12 @@ public class PeerSDK {
         PeerConnections.getInstance().reConnect();
     }
 
+    /*For send message*/
     public void sendMessage(String remoteId, String message) {
         PeerConnections.getInstance().sendMessage(remoteId, message);
     }
 
+    /*For reply message*/
     public void sendReply(String remoteId, String message) {
         PeerConnections.getInstance().sendReply(remoteId, message);
     }

@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PeerConnections {
 
+
     private static final String VIDEO_TRACK_ID = "ARDAMSv0";
     private static final String AUDIO_TRACK_ID = "ARDAMSa0";
     private static final int VIDEO_RESOLUTION_WIDTH = 320;
@@ -140,9 +141,8 @@ public class PeerConnections {
 
                                 case "offer": {
                                     String remoteUserId = mainJson.getString("id");
-                                    onRemoteOfferReceived(mainJson, remoteUserId);
+                                    onRemoteOfferReceived(mainJson);
                                     instaListener.offerReceived(remoteUserId, isAudioCall);
-                                    answerCall(remoteUserId);
                                     break;
                                 }
 
@@ -157,13 +157,13 @@ public class PeerConnections {
                                 case "call-accepted": {
                                     onRemoteAnswerReceived(mainJson);
                                     String remoteUserId = mainJson.getString("id");
-                                    makeCall(remoteUserId);
+                                    instaListener.onCallAccept(remoteUserId);
                                     break;
                                 }
 
                                 case "answer":
                                     onRemoteAnswerReceived(mainJson);
-                                    instaListener.onCallAccept();
+                                    instaListener.afterCallAnswer();
                                     break;
 
                                 case "candidate":
@@ -175,7 +175,8 @@ public class PeerConnections {
                                     break;
 
                                 case "call-declined":
-                                    instaListener.onCallDeclined();
+                                    String remoteUserId = mainJson.getString("id");
+                                    instaListener.onCallDeclined(remoteUserId);
                                     break;
                                 case "video-muted":
                                     isVideoMuted = mainJson.getBoolean("isVideoMute");
@@ -183,7 +184,6 @@ public class PeerConnections {
                                     break;
 
                                 case "message":
-                                    remoteUserId = mainJson.getString("id");
                                     String text = mainJson.getString("message");
                                     instaListener.onMessageReceived(text);
                                     break;
@@ -197,7 +197,6 @@ public class PeerConnections {
                 @Override
                 public void onClose(int code, String reason, boolean remote) {
                     if (code != 1000) {
-//                        abcCaller();
                         instaListener.onStatus(reason);
 
                         reconnectIfNecessary();
@@ -441,7 +440,7 @@ public class PeerConnections {
         return remoteUserId;
     }
 
-    private void onRemoteOfferReceived(JSONObject message, String remoteId) {
+    private void onRemoteOfferReceived(JSONObject message) {
         if (mPeerConnection == null) {
             mPeerConnection = createPeerConnection();
         }
@@ -525,14 +524,17 @@ public class PeerConnections {
         }, mediaConstraints);
     }
 
-    protected void callAccepted(String remoteId) {
+    protected void callAccepted(String remoteId, ActionCallBack callBack) {
         JSONObject message = new JSONObject();
         try {
             message.put("id", remoteId);
             message.put("type", "call-accepted");
             send(message.toString());
+            callBack.onSuccess("callAccepted");
         } catch (JSONException e) {
             e.printStackTrace();
+            callBack.onFailure("callAccepted " + e.getMessage());
+
 
         }
     }
